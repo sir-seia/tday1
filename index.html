@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Day Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fff6df, #f5e7d3, #eaf9ef);
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            width: min(100%, 900px);
+            background: rgba(255,255,255,0.88);
+            border-radius: 22px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            padding: 32px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #5a4338;
+            margin-bottom: 30px;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+        }
+
+        .teacher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .teacher-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 22px 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .teacher-card h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #4d3f37;
+        }
+
+        .teacher-card input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #d8c9be;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .teacher-card input:focus {
+            border-color: #8b6a5c;
+            box-shadow: 0 0 0 3px rgba(139, 106, 92, 0.12);
+        }
+
+        .teacher-card button {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .teacher-card button:hover {
+            transform: translateY(-1px);
+            opacity: 0.96;
+        }
+
+        .card-hanna {
+            border-color: #d5a27c;
+        }
+
+        .card-hanna button {
+            background: linear-gradient(135deg, #d79a6c, #b97855);
+        }
+
+        .card-aies {
+            border-color: #d46b6b;
+        }
+
+        .card-aies button {
+            background: linear-gradient(135deg, #d75d5d, #b84d4d);
+        }
+
+        .card-ian {
+            border-color: #5cb67f;
+        }
+
+        .card-ian button {
+            background: linear-gradient(135deg, #4da66d, #2e7b4c);
+        }
+
+        .error {
+            min-height: 20px;
+            margin-top: 12px;
+            text-align: center;
+            color: #a52a2a;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teacher's Day Letters</h1>
+
+        <div class="teacher-grid">
+            <div class="teacher-card card-hanna">
+                <h2>Ma'am Hanna</h2>
+                <input type="password" id="hannaCode" placeholder="Enter code" aria-label="Ma'am Hanna code">
+                <button type="button" data-teacher="Ma'am Hanna">Open Letter</button>
+            </div>
+
+            <div class="teacher-card card-aies">
+                <h2>Sir Aies</h2>
+                <input type="password" id="aiesCode" placeholder="Enter code" aria-label="Sir Aies code">
+                <button type="button" data-teacher="Sir Aies">Open Letter</button>
+            </div>
+
+            <div class="teacher-card card-ian">
+                <h2>Sir Ian</h2>
+                <input type="password" id="ianCode" placeholder="Enter code" aria-label="Sir Ian code">
+                <button type="button" data-teacher="Sir Ian">Open Letter</button>
+            </div>
+        </div>
+
+        <div class="error" id="errorMessage"></div>
+    </div>
+
+    <script>
+        const teacherCodes = {
+            "Ma'am Hanna": "hanna2026",
+            "Sir Aies": "aies2026",
+            "Sir Ian": "ian2026"
+        };
+
+        const errorMessage = document.getElementById('errorMessage');
+
+        document.querySelectorAll('button[data-teacher]').forEach((button) => {
+            button.addEventListener('click', function () {
+                const teacher = this.dataset.teacher;
+                const codeInput = document.getElementById(
+                    teacher === "Ma'am Hanna" ? 'hannaCode' :
+                    teacher === "Sir Aies" ? 'aiesCode' : 'ianCode'
+                );
+                const enteredCode = codeInput.value.trim();
+
+                if (!enteredCode) {
+                    errorMessage.textContent = 'Please enter the code first.';
+                    return;
+                }
+
+                const validCode = teacherCodes[teacher];
+
+                if (enteredCode.toLowerCase() === validCode) {
+                    errorMessage.textContent = '';
+                    localStorage.setItem('teacherAccess', teacher);
+                    window.location.href = teacher === "Ma'am Hanna"
+                        ? 'Ma\'am Hanna.html'
+                        : teacher === "Sir Aies"
+                        ? 'Sir Aies.html'
+                        : 'Sir Ian.html';
+                } else {
+                    errorMessage.textContent = 'Incorrect code. This letter is only for the assigned teacher.';
+                }
+            });
+        });
+
+        document.querySelectorAll('input[type="password"]').forEach((input) => {
+            input.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    const teacher = this.id === 'hannaCode'
+                        ? "Ma'am Hanna"
+                        : this.id === 'aiesCode'
+                        ? "Sir Aies"
+                        : "Sir Ian";
+
+                    const button = document.querySelector(`button[data-teacher="${teacher}"]`);
+                    if (button) button.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
